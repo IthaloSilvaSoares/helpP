@@ -1,0 +1,105 @@
+#include<stdio.h>
+#include<string.h>
+
+struct No {
+    char valor;
+    No *prox;
+};
+
+struct Pilha {
+
+    No *topo;
+    int n;
+
+    Pilha() {
+        topo = NULL;
+        n = 0;
+    }
+
+    bool vazia() { // O(1)
+        return (topo == NULL);
+    }
+
+    void inserir(char v) { // O(1)
+        No *novo = new No();
+        novo->valor = v;
+        if (vazia()) {
+            novo->prox = NULL;
+            topo = novo;
+        } else {
+            novo->prox = topo;
+            topo = novo;
+        }
+        n++;
+    }
+
+    int tamanho() {
+        return n;
+    }
+
+    bool remover() { // O(1)
+        if (!vazia()) {
+            if (tamanho() == 1) {
+                No *aux = topo;
+                topo = NULL;
+                delete(aux);
+            } else {
+                No *aux = topo;
+                topo = topo->prox;
+                delete(aux);
+            }
+            n--;
+            return true;
+        }
+        return false;
+    }
+
+    int topoPilha() {
+        if (vazia()) {
+            return NULL;
+        }
+        return topo->valor;
+    }
+
+};
+
+int main() {
+    char tmp[101], tmp2[101];
+    int j = 0, resultado = 1;
+
+    scanf("%[^\n]s", tmp);
+
+    for(int z = 0; z < strlen(tmp); z++){
+        if (tmp[z] == ' '){
+            tmp[z] = tmp[z+1];
+            for(int y = z+1; y < strlen(tmp) ; y++){
+                tmp[y] = tmp[y+1];
+            }
+        }
+    }
+
+    for (int i = strlen(tmp); 0 < i; i--,j++){
+        tmp2[j] = tmp[i-1];
+    }
+
+    Pilha p;
+    Pilha aux;
+
+    for(int k = 0; k < strlen(tmp); k++){
+        p.inserir(tmp[k]);
+        aux.inserir(tmp2[k]);
+    }
+
+    for(int l = 0; l < strlen(tmp); l++){
+        if(p.topoPilha() == aux.topoPilha()){
+            p.remover();
+            aux.remover();
+        } else {
+            resultado = 0;
+        }
+    }
+
+    printf("%d\n", resultado);
+
+    return 0;
+}

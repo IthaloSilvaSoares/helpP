@@ -1,0 +1,120 @@
+#include<stdio.h>
+
+struct No {
+
+    int valor;
+    No *prox;
+
+    No() {
+        valor = 0;
+        prox = NULL;
+    }
+
+    No(int _valor) {
+        valor = _valor;
+        prox = NULL;
+    }
+
+};
+
+struct Fila {
+
+    No *inicio, *fim;
+    int n;
+
+    Fila() {
+        inicio = NULL;
+        fim = NULL;
+        n = 0;
+    }
+
+    bool vazia() { // O(1)
+        return inicio == NULL;
+    }
+
+    void inserir(int valor) { // O(1)
+
+        n++;
+        No *novo = new No(valor);
+
+        if (vazia()) {
+            inicio = novo;
+            fim = novo;
+            return;
+        }
+
+        fim->prox = novo;
+        fim = novo;
+
+    }
+
+ /*   void imprimir() { // O(n)
+
+        No *aux = inicio;
+
+        while (aux != NULL) {
+            printf("%d -> ", aux->valor);
+            aux = aux->prox;
+        }
+
+        printf("\n");
+
+    }*/
+
+    int tamanho() { // O(1)
+        return n;
+    }
+
+    void remover() { // O(1)
+
+        if (tamanho() <= 1) {
+            delete(inicio);
+            inicio = NULL;
+            fim = NULL;
+            n = 0;
+            return;
+        }
+
+        No *r = inicio;
+        inicio = inicio->prox;
+        delete(r);
+        n--;
+    }
+    
+    int frente() {
+        if (vazia()) {
+            return NULL;
+        }
+        return inicio->valor;
+    }
+
+};
+
+int main() {
+
+    int n, x, i, c = 0;
+    Fila a, b;
+    scanf("%d", &n);
+    for (i = 0; i < n; i++) {
+        scanf("%d", &x);
+        a.inserir(x);
+    }
+    for (i = 0; i < n; i++) {
+        scanf("%d", &x);
+        b.inserir(x);
+    }
+    while (!a.vazia() && !b.vazia()) {
+        if (a.frente() == b.frente()) {
+            a.remover();
+            b.remover();
+            c++;
+        } else {
+            a.inserir(a.frente());
+            a.remover();
+            c++;
+        }
+    }
+    printf("%d\n", c);
+    return 0;
+}
+

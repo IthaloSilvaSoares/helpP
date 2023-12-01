@@ -1,0 +1,130 @@
+#include<stdio.h>
+#include<string.h>
+struct No {
+
+    char valor;
+    No *prox;
+
+    No() {
+        valor = 0;
+        prox = NULL;
+    }
+
+    No(int _valor) {
+        valor = _valor;
+        prox = NULL;
+    }
+
+};
+
+struct Pilha {
+
+    No *inicio;
+    int n;
+
+    Pilha() {
+        inicio = NULL;
+        n = 0;
+    }
+
+    bool vazia() { // O(1)
+        return inicio == NULL;
+    }
+
+    void inserir(int valor) { // O(1)
+
+        n++;
+        No *novo = new No(valor);
+
+        if (vazia()) {
+            inicio = novo;
+            return;
+        }
+
+        novo->prox = inicio;
+        inicio = novo;
+
+    }
+
+  /*  void imprimir() { // O(n)
+
+        No *aux = inicio;
+
+        while (aux != NULL) {
+            printf("%d -> ", aux->valor);
+            aux = aux->prox;
+        }
+
+        printf("\n");
+
+    }*/
+
+    int tamanho() { // O(1)
+        return n;
+    }
+
+    void remover() { // O(1)
+
+        if (tamanho() <= 1) {
+            delete(inicio);
+            inicio = NULL;
+            n = 0;
+            return;
+        }
+
+        No *r = inicio;
+        inicio = inicio->prox;
+        delete(r);
+        n--;
+    }
+    
+    int topoPilha() {
+        if (vazia()) {
+            return NULL;
+        }
+        return inicio->valor;
+    }
+
+};
+
+int main() {
+
+    char tmp[101], tmp2[101];
+    int j = 0, resultado = 1;
+
+    scanf("%[^\n]s", tmp);
+
+    for(int z = 0; z < strlen(tmp); z++){
+        if (tmp[z] == ' '){
+            tmp[z] = tmp[z+1];
+            for(int y = z+1; y < strlen(tmp) ; y++){
+                tmp[y] = tmp[y+1];
+            }
+        }
+    }
+
+    for (int i = strlen(tmp); 0 < i; i--,j++){
+        tmp2[j] = tmp[i-1];
+    }
+
+    Pilha p;
+    Pilha aux;
+
+    for(int k = 0; k < strlen(tmp); k++){
+        p.inserir(tmp[k]);
+        aux.inserir(tmp2[k]);
+    }
+
+    for(int l = 0; l < strlen(tmp); l++){
+        if(p.topoPilha() == aux.topoPilha()){
+            p.remover();
+            aux.remover();
+        } else {
+            resultado = 0;
+        }
+    }
+
+    printf("%d\n", resultado);
+
+    return 0;
+}
